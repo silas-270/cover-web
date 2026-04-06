@@ -1,8 +1,92 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+  Color palette — TUM PDF Tools
+  ─────────────────────────────
+  Built around TUM Blue (#0065BD ≈ oklch 0.45 0.18 250).
+  Tone: calm, academic, trustworthy. Like a well-stocked library.
+
+  Neutrals carry a faint cool-blue undertone so they feel
+  intentional next to TUM Blue, not generic gray.
+
+  Light mode
+  ──────────
+  Background   oklch(0.982 0.004 250)   → near-white, cool-tinted paper
+  Card         oklch(1 0 0)             → pure white for elevated surfaces
+  Muted        oklch(0.952 0.008 250)   → subtle cool wash for inputs / badges
+  Foreground   oklch(0.175 0.018 255)   → deep blue-slate, softer than black
+  Muted text   oklch(0.500 0.022 252)   → mid-tone for captions / placeholders
+  Primary      oklch(0.450 0.180 250)   → TUM Blue #0065BD
+  Accent       oklch(0.930 0.028 250)   → very light blue for hover fills
+  Border       oklch(0.878 0.012 250)   → cool-gray dividers
+
+  Dark mode
+  ─────────
+  Deep blue-slate bases keep TUM Blue legible without blowing it out.
+  Primary brightens slightly so it passes contrast on dark surfaces.
+*/
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ── Structure ── */
+  --radius: 0.5rem;
+
+  /* ── Base ── */
+  --background: oklch(0.982 0.004 250);
+  --foreground: oklch(0.175 0.018 255);
+
+  /* ── Card / Popover ── */
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.175 0.018 255);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.175 0.018 255);
+
+  /* ── Primary — TUM Blue ── */
+  --primary: oklch(0.450 0.180 250);
+  --primary-foreground: oklch(0.985 0 0);
+
+  /* ── Secondary / Muted ── */
+  --secondary: oklch(0.952 0.008 250);
+  --secondary-foreground: oklch(0.175 0.018 255);
+  --muted: oklch(0.952 0.008 250);
+  --muted-foreground: oklch(0.500 0.022 252);
+
+  /* ── Accent — light TUM blue tint ── */
+  --accent: oklch(0.930 0.028 250);
+  --accent-foreground: oklch(0.175 0.018 255);
+
+  /* ── Semantic ── */
+  --destructive: oklch(0.565 0.220 26);
+
+  /* ── Chrome ── */
+  --border: oklch(0.878 0.012 250);
+  --input: oklch(0.878 0.012 250);
+  --ring: oklch(0.450 0.180 250);
+
+  /* ── Charts ── */
+  --chart-1: oklch(0.450 0.180 250);
+  /* TUM Blue */
+  --chart-2: oklch(0.620 0.130 200);
+  /* teal */
+  --chart-3: oklch(0.720 0.130 85);
+  /* warm amber */
+  --chart-4: oklch(0.540 0.160 290);
+  /* violet */
+  --chart-5: oklch(0.640 0.155 155);
+  /* sage green */
+
+  /* ── Sidebar ── */
+  --sidebar: oklch(0.962 0.006 250);
+  --sidebar-foreground: oklch(0.175 0.018 255);
+  --sidebar-primary: oklch(0.450 0.180 250);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.930 0.028 250);
+  --sidebar-accent-foreground: oklch(0.175 0.018 255);
+  --sidebar-border: oklch(0.878 0.012 250);
+  --sidebar-ring: oklch(0.450 0.180 250);
 }
 
 @theme inline {
@@ -10,17 +94,105 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+.dark {
+  /* ── Base ── */
+  --background: oklch(0.155 0.018 255);
+  /* deep blue-slate */
+  --foreground: oklch(0.948 0.006 250);
+  /* cool off-white */
+
+  /* ── Card / Popover ── */
+  --card: oklch(0.200 0.020 255);
+  --card-foreground: oklch(0.948 0.006 250);
+  --popover: oklch(0.200 0.020 255);
+  --popover-foreground: oklch(0.948 0.006 250);
+
+  /* ── Primary — TUM Blue brightened for dark ── */
+  --primary: oklch(0.580 0.175 250);
+  --primary-foreground: oklch(0.985 0 0);
+
+  /* ── Secondary / Muted ── */
+  --secondary: oklch(0.235 0.022 255);
+  --secondary-foreground: oklch(0.948 0.006 250);
+  --muted: oklch(0.235 0.022 255);
+  --muted-foreground: oklch(0.620 0.025 252);
+
+  /* ── Accent ── */
+  --accent: oklch(0.265 0.030 252);
+  --accent-foreground: oklch(0.948 0.006 250);
+
+  /* ── Semantic ── */
+  --destructive: oklch(0.680 0.190 22);
+
+  /* ── Chrome ── */
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 14%);
+  --ring: oklch(0.580 0.175 250);
+
+  /* ── Charts ── */
+  --chart-1: oklch(0.580 0.175 250);
+  --chart-2: oklch(0.660 0.130 200);
+  --chart-3: oklch(0.760 0.130 85);
+  --chart-4: oklch(0.600 0.160 290);
+  --chart-5: oklch(0.680 0.145 155);
+
+  /* ── Sidebar ── */
+  --sidebar: oklch(0.175 0.020 255);
+  --sidebar-foreground: oklch(0.948 0.006 250);
+  --sidebar-primary: oklch(0.580 0.175 250);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.265 0.030 252);
+  --sidebar-accent-foreground: oklch(0.948 0.006 250);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.580 0.175 250);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
   }
-}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  body {
+    @apply bg-background text-foreground;
+  }
 }
