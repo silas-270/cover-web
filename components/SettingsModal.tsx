@@ -66,7 +66,7 @@ const SettingsModal = () => {
                 </Button>
             </DialogTrigger>
 
-            <DialogContent className="max-w-xl max-h-[90vh] flex flex-col gap-0 p-0 rounded-xl border bg-background">
+            <DialogContent onOpenAutoFocus={(e) => e.preventDefault()} className="max-w-xl max-h-[90vh] flex flex-col gap-0 p-0 rounded-xl border bg-background">
                 {/* Header */}
                 <DialogHeader className="px-6 pt-6 pb-4 border-b">
                     <DialogTitle className="text-base font-semibold">Settings</DialogTitle>
