@@ -25,7 +25,7 @@ export interface ProcessResult {
 // 2. Interface für den gesamten Store (State + Actions)
 interface PdfStoreState {
   // State
-  type: "ANALYSIS_1" | "LINEARE_ALGEBRA_1";
+  type: string;
   data: PdfData;
   mainPdfFile: File | null;
   processResult: ProcessResult | null;
@@ -34,7 +34,7 @@ interface PdfStoreState {
 
   // Actions
   setData: (newData: PdfData) => void;
-  setType: (type: "ANALYSIS_1" | "LINEARE_ALGEBRA_1") => void;
+  setType: (type: string) => void;
   setMainPdfFile: (file: File) => void;
   setProcessResult: (result: ProcessResult | null) => void;
   setProcessing: (val: boolean) => void;

@@ -1,65 +1,55 @@
-import { generateAnalysisPDF } from "./generateAnalysisPDF.js";
-import { generateLinearAlgebraPDFs, createZipFromPdfs } from "./generateLinearAlgebraPDFs";
-import { validateInput } from "./validateInput.js";
+import { getModule, createZipFromPdfs } from '../config/modules';
+import { validateGlobal } from './validateInput.js';
 
 /**
- * Generiert die Analysis-Abgabe
- * @param {string} type - ANALYSIS oder LINA
- * @param {ArrayBuffer} mainPdf - Die Hochgeladene PDF
- * @param {Object} data - 
- * {
- *   sheetNum: ganzzahl, größer gleich 0
- *   (LA) startIdx: ganzzahl, größer gleich 0
- *   (LA) pagesArray: array von ganzzahl, größer gleich 0
- *   (LA) teamName: string
- *   students [
- *     { 
- *       lastName: string, 
- *       firstName: string, 
- *       matNum:string 
- *     }
- *   ]
- * }
- * 
- * Verarbeitet die Dokumente und gibt das Ergebnis zurück.
- * @returns {Promise<{blob: Blob, fileName: string} | null>}
+ * Main processing entry point.
+ * Looks up the module from the registry, validates, runs the engine.
+ *
+ * @param {string} type - Module ID (e.g. 'ANALYSIS_1')
+ * @param {ArrayBuffer} mainPdf - The uploaded PDF
+ * @param {Object} data - Form data from the store
+ * @returns {Promise<{blob: Blob, fileName: string}>}
  */
 const handleProcessing = async (type, mainPdf, data) => {
-  const isValid = (type === 'ANALYSIS_1')
-    ? validateInput(data, true)
-    : validateInput(data, false);
+  const mod = getModule(type);
 
-  if (!isValid) return null;
+  // 1. Global validation
+  validateGlobal(data);
 
+  // 2. Module-specific: team name
+  if (mod.requiresTeamName && (!data.teamName || data.teamName.trim() === '')) {
+    throw new Error("Bitte gib einen Teamnamen in den Einstellungen an.");
+  }
+
+  // 3. Module-specific: custom validate
+  if (mod.validate) {
+    mod.validate(data);
+  }
+
+  // 4. Fetch template & run engine
   try {
-    if (type === 'ANALYSIS_1') {
-      const response = await fetch('covers/analysis-cover.pdf');
-      const template = await response.arrayBuffer();
-      const pdfBytes = await generateAnalysisPDF(mainPdf, template, data);
+    const response = await fetch(mod.templatePath);
+    const template = await response.arrayBuffer();
+    const result = await mod.engine(mainPdf, template, data);
 
-      // Rückgabe statt saveAs
+    // 5. Package output
+    if (mod.outputType === 'pdf') {
       return {
-        blob: new Blob([pdfBytes], { type: 'application/pdf' }),
-        fileName: `Blatt ${data.sheetNum}.pdf`
+        blob: new Blob([result], { type: 'application/pdf' }),
+        fileName: `Blatt ${data.sheetNum}.pdf`,
       };
-    }
-
-    else if (type === 'LINEARE_ALGEBRA_1') {
-      const response = await fetch('covers/linear-algebra-cover.pdf');
-      const template = await response.arrayBuffer();
-      const results = await generateLinearAlgebraPDFs(mainPdf, template, data);
-      const zipBlob = await createZipFromPdfs(results);
-
-      // Rückgabe statt saveAs
+    } else {
+      // Engine returns array of {fileName, bytes} → zip them
+      const zipBlob = await createZipFromPdfs(result);
       return {
         blob: zipBlob,
-        fileName: `Blatt ${data.sheetNum}.zip`
+        fileName: `Blatt ${data.sheetNum}.zip`,
       };
     }
   } catch (error) {
     console.error("Fehler bei der PDF-Generierung:", error);
-    throw error; // Fehler weiterreichen für das UI-Handling
+    throw error;
   }
-}
+};
 
-export default handleProcessing
+export default handleProcessing;
