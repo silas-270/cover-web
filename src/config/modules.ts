@@ -30,6 +30,7 @@ export interface ModuleConfig {
 // ──────────────────────────────────────────────────
 
 export const modules: ModuleConfig[] = [
+  /*
   {
     id: 'ANALYSIS_1',
     name: 'Analysis 1',
@@ -43,6 +44,39 @@ export const modules: ModuleConfig[] = [
     id: 'LINEARE_ALGEBRA_1',
     name: 'Lineare Algebra 1',
     templatePath: 'covers/linear-algebra-cover.pdf',
+    fields: [
+      {
+        key: 'startIdx',
+        label: 'First Task No.',
+        type: 'number',
+        placeholder: 'e.g. 23',
+      },
+      {
+        key: 'pagesArray',
+        label: 'Pages per Task',
+        type: 'pages-array',
+        placeholder: 'e.g. 1, 2, 1 (Default: 1 per task)',
+        helpText: 'Comma-separated, one value per task (empty: 1 per task)',
+      },
+    ],
+    engine: generateLinearAlgebraPDFs,
+    outputType: 'zip',
+    requiresTeamName: true,
+  },
+  */
+  {
+    id: 'ANALYSIS_2',
+    name: 'Analysis 2',
+    templatePath: 'covers/analysis-cover.pdf',
+    fields: [],
+    engine: generateAnalysisPDF,
+    outputType: 'pdf',
+    requiresTeamName: false,
+  },
+  {
+    id: 'LINEARE_ALGEBRA_2',
+    name: 'Lineare Algebra 2',
+    templatePath: 'covers/linear-algebra2-cover.pdf',
     fields: [
       {
         key: 'startIdx',

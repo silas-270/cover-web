@@ -47,7 +47,7 @@ const usePdfStore = create<PdfStoreState>()(
   persist(
     (set) => ({
       // --- Initiale Werte ---
-      type: "ANALYSIS_1",
+      type: "ANALYSIS_2",
       data: {
         teamName: "",
         sheetNum: 0,
