@@ -67,7 +67,7 @@ export const modules: ModuleConfig[] = [
   {
     id: 'ANALYSIS_2',
     name: 'Analysis 2',
-    templatePath: 'covers/analysis-cover.pdf',
+    templatePath: 'covers/analysis2-cover.pdf',
     fields: [],
     engine: generateAnalysisPDF,
     outputType: 'pdf',
