@@ -1,5 +1,5 @@
 "use client"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import {
     Field,
     FieldGroup,
@@ -16,6 +16,34 @@ import {
 import { Input } from "@/components/ui/input"
 import usePdfStore from "@/src/zustand/usePdfStore"
 import { modules, getModule } from "@/src/config/modules"
+
+const PagesArrayInput = ({ field, data, handleDataChange }: { field: any, data: any, handleDataChange: any }) => {
+    const [val, setVal] = useState((data[field.key] || []).join(", "))
+    
+    const dataLen = data[field.key]?.length || 0;
+    useEffect(() => {
+        if (dataLen === 0) {
+            setVal("")
+        }
+    }, [dataLen])
+
+    return (
+        <Input
+            id={`fieldgroup-${field.key}`}
+            placeholder={field.placeholder}
+            value={val}
+            onChange={(e) => {
+                setVal(e.target.value)
+                const parts = e.target.value
+                    .split(",")
+                    .map((s: string) => parseInt(s.trim()))
+                    .filter((n: number) => !isNaN(n))
+                handleDataChange(field.key, parts)
+            }}
+            className="h-9 text-sm border-border bg-background focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary transition-colors"
+        />
+    )
+}
 
 const DataFormSection = () => {
     const type = usePdfStore((state) => state.type)
@@ -125,21 +153,7 @@ const DataFormSection = () => {
 
                         {field.type === "pages-array" ? (
                             <>
-                                <Input
-                                    id={`fieldgroup-${field.key}`}
-                                    placeholder={field.placeholder}
-                                    value={(data as any)[field.key]?.join(", ") || ""}
-                                    onChange={(e) => {
-                                        const parts = e.target.value
-                                            .split(",")
-                                            .map((s: string) => parseInt(s.trim()))
-                                            .filter((n: number) => !isNaN(n))
-                                        handleDataChange(field.key, parts)
-                                    }}
-                                    className="h-9 text-sm border-border bg-background
-                                   focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary
-                                   transition-colors"
-                                />
+                                <PagesArrayInput field={field} data={data} handleDataChange={handleDataChange} />
                                 {field.helpText && (
                                     <p className="text-[11px] text-muted-foreground mt-1">
                                         {field.helpText}
