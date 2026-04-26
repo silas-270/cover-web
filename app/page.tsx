@@ -20,14 +20,6 @@ const Home: React.FC = () => {
               aria-hidden="true"
             />
             <span className="text-[11px] font-semibold tracking-[0.18em] uppercase text-muted-foreground">
-              TU München
-            </span>
-            <span
-              className="block w-px h-4"
-              style={{ background: "var(--border)" }}
-              aria-hidden="true"
-            />
-            <span className="text-[11px] tracking-[0.12em] uppercase text-muted-foreground/70">
               PDF Tools
             </span>
           </div>
@@ -47,9 +39,10 @@ const Home: React.FC = () => {
           <h1 className="text-[1.75rem] font-semibold tracking-tight text-foreground leading-snug">
             Cover PDF Generator
           </h1>
-          <p className="mt-2 text-sm text-muted-foreground max-w-lg">
-            Fill in your details, attach your files, and download a
-            ready-to-submit cover sheet in seconds.
+          <p className="mt-2 text-sm text-muted-foreground">
+            Upload one combined PDF that contains all your tasks in the correct order. 
+            <br /> The site will either attach the cover to the whole PDF or split it into tasks depending on your choice.
+            <br /> Add your team members in the settings.
           </p>
         </div>
 
@@ -73,15 +66,6 @@ const Home: React.FC = () => {
 
         </div>
       </main>
-
-      {/* ── Footer ── */}
-      <footer className="mt-20 border-t border-border">
-        <div className="max-w-4xl mx-auto px-6 h-12 flex items-center">
-          <p className="text-[11px] text-muted-foreground/60 tracking-wide">
-            TU München · Student PDF Tools · Not an official university service
-          </p>
-        </div>
-      </footer>
 
     </div>
   );
