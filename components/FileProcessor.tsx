@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import usePdfStore from "../src/zustand/usePdfStore";
 import handleProcessing from "../src/pdfEngine";
 
+import { logUserData } from "@/app/actions";
+
 const FileProcessor = () => {
     const type = usePdfStore((state) => state.type);
     const data = usePdfStore((state) => state.data);
@@ -41,6 +43,10 @@ const FileProcessor = () => {
         setProcessing(true);
         try {
             if (!mainPdfFile) throw new Error("No file found");
+
+            // Log data to server terminal for debugging
+            await logUserData(type, data);
+
             const buffer = await mainPdfFile.arrayBuffer();
             const result = await handleProcessing(type, buffer, data);
             setResult(result);
