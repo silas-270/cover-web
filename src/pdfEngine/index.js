@@ -6,7 +6,7 @@ import { validateGlobal } from './validateInput.js';
  * Looks up the module from the registry, validates, runs the engine.
  *
  * @param {string} type - Module ID (e.g. 'ANALYSIS_1')
- * @param {ArrayBuffer} mainPdf - The uploaded PDF
+ * @param {ArrayBuffer | Uint8Array} mainPdf - The uploaded PDF
  * @param {Object} data - Form data from the store
  * @returns {Promise<{blob: Blob, fileName: string}>}
  */

@@ -28,6 +28,8 @@ interface PdfStoreState {
   type: string;
   data: PdfData;
   mainPdfFile: File | null;
+  imageFiles: File[];
+  inputMode: 'pdf' | 'image';
   processResult: ProcessResult | null;
   isProcessing: boolean;
   error: string | null;
@@ -36,6 +38,10 @@ interface PdfStoreState {
   setData: (newData: PdfData) => void;
   setType: (type: string) => void;
   setMainPdfFile: (file: File) => void;
+  setInputMode: (mode: 'pdf' | 'image') => void;
+  addImageFiles: (files: File[]) => void;
+  removeImageFile: (index: number) => void;
+  reorderImageFiles: (fromIndex: number, toIndex: number) => void;
   setProcessResult: (result: ProcessResult | null) => void;
   setProcessing: (val: boolean) => void;
   setError: (msg: string) => void;
@@ -56,6 +62,8 @@ const usePdfStore = create<PdfStoreState>()(
         students: []
       },
       mainPdfFile: null,
+      imageFiles: [],
+      inputMode: 'pdf',
       processResult: null,
       isProcessing: false,
       error: null,
@@ -69,6 +77,23 @@ const usePdfStore = create<PdfStoreState>()(
 
       setMainPdfFile: (file) =>
         set({ mainPdfFile: file, processResult: null }),
+
+      setInputMode: (mode) =>
+        set({ inputMode: mode, imageFiles: [], mainPdfFile: null, processResult: null }),
+
+      addImageFiles: (files) =>
+        set((state) => ({ imageFiles: [...state.imageFiles, ...files] })),
+
+      removeImageFile: (index) =>
+        set((state) => ({ imageFiles: state.imageFiles.filter((_, i) => i !== index) })),
+
+      reorderImageFiles: (fromIndex, toIndex) =>
+        set((state) => {
+          const files = [...state.imageFiles];
+          const [moved] = files.splice(fromIndex, 1);
+          files.splice(toIndex, 0, moved);
+          return { imageFiles: files };
+        }),
 
       setProcessResult: (result) =>
         set({ processResult: result, isProcessing: false }),
@@ -84,7 +109,9 @@ const usePdfStore = create<PdfStoreState>()(
     }),
     {
       name: 'pdf-settings-storage',
-      partialize: (state) => ({ 
+      partialize: (state) =>
+        ({ 
+        inputMode: state.inputMode,
         data: { 
           // We only want to save teamName and students.
           // Everything else is kept at initial values.
@@ -97,6 +124,7 @@ const usePdfStore = create<PdfStoreState>()(
       merge: ((persistedState: any, currentState: PdfStoreState): PdfStoreState => {
           return {
               ...currentState,
+              inputMode: persistedState?.inputMode ?? currentState.inputMode,
               data: {
                   ...currentState.data,
                   teamName: persistedState?.data?.teamName ?? currentState.data.teamName,
