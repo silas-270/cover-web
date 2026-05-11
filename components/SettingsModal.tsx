@@ -66,16 +66,16 @@ const SettingsModal = () => {
                     className="h-8 px-3 text-xs gap-1.5 text-muted-foreground border-border hover:text-foreground"
                 >
                     <Settings className="w-3.5 h-3.5" />
-                    Settings
+                    Einstellungen
                 </Button>
             </DialogTrigger>
 
             <DialogContent onOpenAutoFocus={(e) => e.preventDefault()} className="max-w-xl max-h-[90vh] flex flex-col gap-0 p-0 rounded-xl border bg-background">
                 {/* Header */}
                 <DialogHeader className="px-6 pt-6 pb-4 border-b">
-                    <DialogTitle className="text-base font-semibold">Settings</DialogTitle>
+                    <DialogTitle className="text-base font-semibold">Einstellungen</DialogTitle>
                     <DialogDescription className="text-sm text-muted-foreground">
-                        Manage your team name and members.
+                        Verwalte deinen Teamnamen und die Mitglieder.
                     </DialogDescription>
                 </DialogHeader>
 
@@ -84,7 +84,7 @@ const SettingsModal = () => {
                 {/* Input Mode */}
                     <div className="space-y-2">
                         <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                            Input Mode
+                            Eingabemodus
                         </span>
                         <div className="flex rounded-lg border border-border overflow-hidden mt-1.5">
                             <button
@@ -107,23 +107,23 @@ const SettingsModal = () => {
                                 }}
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                                Images
+                                Bilder
                             </button>
                         </div>
                         <p className="text-xs text-muted-foreground">
                             {localData.inputMode === 'pdf'
-                                ? 'Upload a single combined PDF file.'
-                                : 'Upload one or more images (photos, scans).'}
+                                ? 'Eine einzelne PDF-Datei hochladen.'
+                                : 'Ein oder mehrere Bilder (Fotos, Scans) hochladen.'}
                         </p>
                     </div>
 
                     {/* Team Name */}
                     <Field>
                         <FieldLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                            Team Name
+                            Teamname
                         </FieldLabel>
                         <Input
-                            placeholder="e.g. Dorfuchs Fans"
+                            placeholder="z.B. Dorfuchs Fans"
                             value={localData.teamName || ""}
                             onChange={(e) =>
                                 setLocalData({ ...localData, teamName: e.target.value })
@@ -136,7 +136,7 @@ const SettingsModal = () => {
                     <div className="space-y-3">
                         <div className="flex items-center justify-between">
                             <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                                Team Members
+                                Teammitglieder
                             </span>
                             <Button
                                 variant="ghost"
@@ -145,14 +145,14 @@ const SettingsModal = () => {
                                 className="h-7 px-2 text-xs gap-1 text-muted-foreground hover:text-foreground"
                             >
                                 <Plus className="w-3.5 h-3.5" />
-                                Add
+                                Hinzufügen
                             </Button>
                         </div>
 
                         {localData.students.length === 0 ? (
                             <div className="py-6 text-center border border-dashed rounded-lg">
-                                <p className="text-sm text-foreground font-medium">No members yet.</p>
-                                <p className="text-xs text-muted-foreground mt-1">You must add at least one member to process documents.</p>
+                                <p className="text-sm text-foreground font-medium">Noch keine Mitglieder.</p>
+                                <p className="text-xs text-muted-foreground mt-1">Du musst mindestens ein Mitglied hinzufügen, um Dokumente zu verarbeiten.</p>
                             </div>
                         ) : (
                             <div className="space-y-2">
@@ -163,7 +163,7 @@ const SettingsModal = () => {
                                     >
                                         <Field>
                                             <FieldLabel className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
-                                                First
+                                                Vorname
                                             </FieldLabel>
                                             <Input
                                                 placeholder="Max"
@@ -176,7 +176,7 @@ const SettingsModal = () => {
                                         </Field>
                                         <Field>
                                             <FieldLabel className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
-                                                Last
+                                                Nachname
                                             </FieldLabel>
                                             <Input
                                                 placeholder="Mustermann"
@@ -222,14 +222,14 @@ const SettingsModal = () => {
                         onClick={() => setOpen(false)}
                         className="flex-1 sm:flex-none"
                     >
-                        Cancel
+                        Abbrechen
                     </Button>
                     <Button
                         onClick={handleSave}
                         className="flex-1 sm:flex-none"
                         style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
                     >
-                        Save
+                        Speichern
                     </Button>
                 </DialogFooter>
             </DialogContent>

@@ -40,9 +40,9 @@ const Home: React.FC = () => {
             Cover PDF Generator
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Upload one combined PDF that contains all your tasks in the correct order. 
-            <br /> The site will either attach the cover to the whole PDF or split it into tasks depending on your choice.
-            <br /> Add your team members in the settings.
+            Lade ein kombiniertes PDF oder mehrere Bilder hoch, die alle deine Aufgaben in der richtigen Reihenfolge enthalten.
+            <br /> Die Seite fügt je nach Auswahl ein Deckblatt zum gesamten Dokument hinzu oder teilt es in einzelne Aufgaben auf.
+            <br /> Füge deine Teammitglieder in den Einstellungen hinzu.
           </p>
         </div>
 
@@ -50,12 +50,12 @@ const Home: React.FC = () => {
         <div className="space-y-6">
 
           {/* Step 1 */}
-          <Section step={1} title="Your Details">
+          <Section step={1} title="Deine Daten">
             <DataFormSection />
           </Section>
 
           {/* Step 2 */}
-          <Section step={2} title="Attach Files">
+          <Section step={2} title="Dateien hochladen">
             <FileProcessor />
           </Section>
 
