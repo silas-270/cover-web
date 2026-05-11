@@ -45,14 +45,6 @@ const ImageRow: React.FC<ImageRowProps> = ({ file, uid, index, isLast, onRemove 
                 background: isDragging ? "var(--accent)" : undefined,
             }}
         >
-            {/* Index badge */}
-            <span
-                className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-semibold text-muted-foreground"
-                style={{ background: "var(--muted)" }}
-            >
-                {index + 1}
-            </span>
-
             {/* Thumbnail */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -96,7 +88,7 @@ const ImageRow: React.FC<ImageRowProps> = ({ file, uid, index, isLast, onRemove 
                 <button
                     ref={handleRef}
                     aria-label="Reihenfolge ändern"
-                    className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors cursor-grab active:cursor-grabbing touch-none"
+                    className="w-11 h-11 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors cursor-grab active:cursor-grabbing touch-none"
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
