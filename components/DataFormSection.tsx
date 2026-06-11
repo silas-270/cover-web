@@ -14,7 +14,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
-import usePdfStore from "@/src/zustand/usePdfStore"
+import usePdfStore, { getActiveGroup } from "@/src/zustand/usePdfStore"
 import { modules, getModule } from "@/src/config/modules"
 
 const PagesArrayInput = ({ field, data, handleDataChange }: { field: any, data: any, handleDataChange: any }) => {
@@ -50,23 +50,32 @@ const DataFormSection = () => {
     const setType = usePdfStore((state) => state.setType)
     const data = usePdfStore((state) => state.data)
     const setData = usePdfStore((state) => state.setData)
+    const groups = usePdfStore((state) => state.groups)
 
     const currentModule = getModule(type)
+    const activeGroup = groups[type]
 
     const handleLectureChange = (val: string) => {
         setType(val)
     }
 
-    // Real-time team name validation
+    // Real-time validation for group/team name
     useEffect(() => {
-        if (currentModule.requiresTeamName && (!data.teamName || data.teamName.trim() === "")) {
-            usePdfStore.getState().setError("Bitte gib einen Teamnamen in den Einstellungen an.")
+        const store = usePdfStore.getState()
+        const group = getActiveGroup(store)
+
+        if (!group) {
+            store.setError(`Für „${currentModule.name}" wurde noch keine Gruppe erstellt. Erstelle eine in den Einstellungen.`)
+        } else if (currentModule.requiresTeamName && (!group.teamName || group.teamName.trim() === "")) {
+            store.setError(`Bitte gib einen Teamnamen für „${currentModule.name}" in den Einstellungen an.`)
         } else {
-            if (usePdfStore.getState().error === "Bitte gib einen Teamnamen in den Einstellungen an.") {
-                usePdfStore.getState().reset()
+            // Clear only our own error messages
+            const currentError = store.error
+            if (currentError?.includes("Gruppe erstellt") || currentError?.includes("Teamnamen")) {
+                store.reset()
             }
         }
-    }, [type, data.teamName, currentModule.requiresTeamName])
+    }, [type, activeGroup, currentModule])
 
     const handleDataChange = (field: string, value: any) => {
         setData({ ...data, [field]: value })

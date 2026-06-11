@@ -9,12 +9,15 @@ export interface Student {
   matNum: string;
 }
 
+export interface Group {
+  teamName: string;
+  students: Student[];
+}
+
 export interface PdfData {
   sheetNum: number;
   startIdx?: number; // Optional, da es nur bei LA gebraucht wird
   pagesArray?: number[]; // Optional, da es nur bei LA gebraucht wird
-  teamName?: string; // Optional, da es nur bei LA gebraucht wird
-  students: Student[];
 }
 
 export interface ProcessResult {
@@ -27,6 +30,7 @@ interface PdfStoreState {
   // State
   type: string;
   data: PdfData;
+  groups: Record<string, Group>;
   mainPdfFile: File | null;
   imageFiles: File[];
   inputMode: 'pdf' | 'image';
@@ -37,6 +41,9 @@ interface PdfStoreState {
   // Actions
   setData: (newData: PdfData) => void;
   setType: (type: string) => void;
+  setGroups: (groups: Record<string, Group>) => void;
+  setGroup: (moduleId: string, group: Group) => void;
+  deleteGroup: (moduleId: string) => void;
   setMainPdfFile: (file: File) => void;
   setInputMode: (mode: 'pdf' | 'image') => void;
   addImageFiles: (files: File[]) => void;
@@ -48,6 +55,11 @@ interface PdfStoreState {
   reset: () => void;
 }
 
+// Helper: get the group for the currently selected lecture
+export function getActiveGroup(state: PdfStoreState): Group | undefined {
+  return state.groups[state.type];
+}
+
 // 3. Store erstellen
 const usePdfStore = create<PdfStoreState>()(
   persist(
@@ -55,12 +67,11 @@ const usePdfStore = create<PdfStoreState>()(
       // --- Initiale Werte ---
       type: "ANALYSIS_2",
       data: {
-        teamName: "",
         sheetNum: 0,
         startIdx: 0,
         pagesArray: [],
-        students: []
       },
+      groups: {},
       mainPdfFile: null,
       imageFiles: [],
       inputMode: 'pdf',
@@ -74,6 +85,21 @@ const usePdfStore = create<PdfStoreState>()(
 
       setType: (type) =>
         set({ type }),
+
+      setGroups: (groups) =>
+        set({ groups }),
+
+      setGroup: (moduleId, group) =>
+        set((state) => ({
+          groups: { ...state.groups, [moduleId]: group }
+        })),
+
+      deleteGroup: (moduleId) =>
+        set((state) => {
+          const newGroups = { ...state.groups };
+          delete newGroups[moduleId];
+          return { groups: newGroups };
+        }),
 
       setMainPdfFile: (file) =>
         set({ mainPdfFile: file, processResult: null }),
@@ -112,9 +138,10 @@ const usePdfStore = create<PdfStoreState>()(
       partialize: (state) =>
         ({ 
         inputMode: state.inputMode,
+        groups: state.groups,
+        type: state.type,
         data: { 
-          // We only want to save teamName and students.
-          // Everything else is kept at initial values.
+          // We only want to persist structural defaults, not per-session values
           ...state.data,
           sheetNum: 0,
           startIdx: 0,
@@ -122,13 +149,27 @@ const usePdfStore = create<PdfStoreState>()(
         } as PdfData
       }),
       merge: ((persistedState: any, currentState: PdfStoreState): PdfStoreState => {
+          // Migration: old format had teamName/students inside data
+          let groups = persistedState?.groups ?? {};
+
+          if (persistedState?.data?.students && Array.isArray(persistedState.data.students)) {
+            // Old format detected — migrate to new groups structure
+            const migrationType = persistedState?.type ?? currentState.type;
+            groups = {
+              [migrationType]: {
+                teamName: persistedState.data.teamName ?? '',
+                students: persistedState.data.students,
+              }
+            };
+          }
+
           return {
               ...currentState,
               inputMode: persistedState?.inputMode ?? currentState.inputMode,
+              type: persistedState?.type ?? currentState.type,
+              groups,
               data: {
                   ...currentState.data,
-                  teamName: persistedState?.data?.teamName ?? currentState.data.teamName,
-                  students: persistedState?.data?.students ?? currentState.data.students
               }
           }
       }) as any

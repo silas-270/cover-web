@@ -1,7 +1,7 @@
 "use client";
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import usePdfStore from "../src/zustand/usePdfStore";
+import usePdfStore, { getActiveGroup } from "../src/zustand/usePdfStore";
 import handleProcessing from "../src/pdfEngine";
 import ImageProcessor from "@/components/ImageProcessor";
 import { convertImagesToPdfBuffer } from "@/src/lib/imageToPdf";
@@ -16,6 +16,7 @@ const FileProcessor = () => {
     const setResult = usePdfStore((state) => state.setProcessResult);
     const error = usePdfStore((state) => state.error);
     const inputMode = usePdfStore((state) => state.inputMode);
+    const groups = usePdfStore((state) => state.groups);
     const imageFiles = usePdfStore((state) => state.imageFiles);
 
     const inputRef = useRef<HTMLInputElement>(null);
@@ -52,7 +53,8 @@ const FileProcessor = () => {
                 if (imageFiles.length === 0) throw new Error("Keine Bilder ausgewählt");
                 buffer = await convertImagesToPdfBuffer(imageFiles);
             }
-            const result = await handleProcessing(type, buffer, data);
+            const group = getActiveGroup(usePdfStore.getState());
+            const result = await handleProcessing(type, buffer, data, group as any);
             setResult(result);
         } catch (err: any) {
             console.error(err);
